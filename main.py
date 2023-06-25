@@ -1,4 +1,100 @@
 import random
+import tkinter as tk
+from tkinter import messagebox
+
+class BlackjackGUI:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Blackjack")
+        self.deck = Deck()
+        self.player = Player("Player")
+        self.dealer = Player("Dealer")
+
+        self.create_widgets()
+        self.start_game()
+
+    def create_widgets(self):
+        self.title_label = tk.Label(self.root, text="Welcome to Blackjack!", font=("Arial", 16))
+        self.title_label.pack(pady=10)
+
+        self.player_label = tk.Label(self.root, text="Player's hand:", font=("Arial", 12))
+        self.player_label.pack()
+
+        self.player_hand_label = tk.Label(self.root, text="", font=("Arial", 12))
+        self.player_hand_label.pack()
+
+        self.dealer_label = tk.Label(self.root, text="Dealer's hand:", font=("Arial", 12))
+        self.dealer_label.pack()
+
+        self.dealer_hand_label = tk.Label(self.root, text="", font=("Arial", 12))
+        self.dealer_hand_label.pack()
+
+        self.result_label = tk.Label(self.root, text="", font=("Arial", 12))
+        self.result_label.pack(pady=10)
+
+        self.hit_button = tk.Button(self.root, text="Hit", width=10, command=self.hit)
+        self.hit_button.pack(side=tk.LEFT, padx=10)
+
+        self.stand_button = tk.Button(self.root, text="Stand", width=10, command=self.stand)
+        self.stand_button.pack(side=tk.LEFT)
+
+    def start_game(self):
+        self.deck.shuffle()
+        self.deal_initial_cards()
+        self.update_hands()
+
+    def deal_initial_cards(self):
+        self.player.add_card(self.deck.deal())
+        self.dealer.add_card(self.deck.deal())
+        self.player.add_card(self.deck.deal())
+        self.dealer.add_card(self.deck.deal())
+
+    def hit(self):
+        card = self.deck.deal()
+        self.player.add_card(card)
+        self.update_hands()
+
+        if self.player.get_hand_value() > 21:
+            self.end_game("Dealer wins!")
+
+    def stand(self):
+        while self.dealer.get_hand_value() < 17:
+            card = self.deck.deal()
+            self.dealer.add_card(card)
+            self.update_hands()
+
+        self.end_game()
+
+    def end_game(self, message=None):
+        player_value = self.player.get_hand_value()
+        dealer_value = self.dealer.get_hand_value()
+
+        self.result_label.config(text="Final hands:\n" + str(self.player) + "\n" + str(self.dealer))
+
+        if player_value > 21 or (dealer_value <= 21 and dealer_value > player_value):
+            if message is None:
+                message = "Dealer wins!"
+        elif player_value == dealer_value:
+            message = "It's a tie!"
+        else:
+            message = "Player wins!"
+
+        play_again = messagebox.askyesno("Game Over", message + "\nDo you want to play again?")
+        if play_again:
+            self.reset()
+            self.start_game()
+        else:
+            self.root.destroy()
+
+    def reset(self):
+        self.deck = Deck()
+        self.player = Player("Player")
+        self.dealer = Player("Dealer")
+
+    def update_hands(self):
+        self.player_hand_label.config(text=str(self.player))
+        self.dealer_hand_label.config(text=str(self.dealer))
+
 
 class Card:
     def __init__(self, suit, rank):
@@ -134,3 +230,7 @@ class Game:
         self.player = Player("Player")
         self.dealer = Player("Dealer")
 
+if __name__ == "__main__":
+    root = tk.Tk()
+    game = BlackjackGUI(root)
+    root.mainloop()
