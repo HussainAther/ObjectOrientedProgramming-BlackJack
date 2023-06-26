@@ -7,72 +7,52 @@
 </head>
 <body>
     <h1>Multiplayer Blackjack</h1>
-    <button class="button" id="deal-btn" onclick="dealCard()">Deal</button>
-    <button class="button" id="hit-btn1">Player 1 Hit</button>
-    <button class="button" id="hit-btn2">Player 2 Hit</button>
-    <button class="button" id="end-btn">End Game</button>
-    <div id="result"></div>
-
-    <div id="cardContainer"></div>
-
     <script type="text/javascript">
         $(document).ready(function() {
-        // Connect to the WebSocket server
-        var socket = io.connect('http://' + document.domain + ':' + location.port);
+            var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-        socket.on('card_dealt', function(data) {
-        var cardName = data.card;
-        var cardElement = document.createElement('div');
-        cardElement.className = 'card';
-        cardElement.style.backgroundImage = "url('/static/cards/" + cardName + ".png')";
-        document.getElementById('cardContainer').appendChild(cardElement);
-        // Display the dealt card using animation
-        var card = data.card;
-        animateCard(card);
-        console.log(card);
-    });
+            socket.on('card_dealt', function(data) {
+            var cardName = data.card;
+            var cleanedCardName = cardName.replace(/of/g, '').trim();
+            var cardElement = document.createElement('div');
+            cardElement.className = 'card';
+            cardElement.style.backgroundImage = "url('static/cards/" + cleanedCardName.replace(/\s/g, "") + ".png')";
+            document.getElementById('cardContainer').appendChild(cardElement);
+            // Display the dealt card using animation
+            var card = data.card;
+            console.log(card);
+            animateCard(card);
+        });
 
-        // Animate the dealt card
-        function animateCard(card) {
-            // Create a new image element for the card
-            var img = $('<img>').attr('src', '/static/cards/' + card + '.png');
+            function animateCard(card) {
+                // Create a new image element for the card
+                var cleanedCardName = card.replace(/of/g, '').trim();
+                var img = $('<img>').attr('src', 'static/cards/' + cleanedCardName.replace(/\s/g, "") + '.png');
 
-            // Set the initial CSS properties for the card
-            img.css({
-                'position': 'absolute',
-                'top': '50%',
-                'left': '50%',
-                'transform': 'translate(-50%, -50%)',
-                'opacity': '0'
-            });
-
-            // Append the card to the document body
-            $('body').append(img);
-
-            // Animate the card's appearance
-            img.animate({
-                'opacity': '1'
-            }, 1000, function() {
-                // Animation complete
-                // You can perform additional actions here if needed
-            });
-        }
-
-        function dealCard() {
-            socket.emit('deal_card');
-        }
-    }
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            $("#deal-btn").click(function() {
-                $.ajax({
-                    url: "/deal",
-                    success: function(result) {
-                        alert(result);
-                    }
+                // Set the initial CSS properties for the card
+                img.css({
+                    'position': 'absolute',
+                    'top': '50%',
+                    'left': '50%',
+                    'transform': 'translate(-50%, -50%)',
+                    'opacity': '0'
                 });
+
+                // Append the card to the document body
+                $('body').append(img);
+
+                // Animate the card's appearance
+                img.animate({
+                    'opacity': '1'
+                }, 1000, function() {
+                    // Animation complete
+                    // You can perform additional actions here if needed
+                });
+            }
+
+            $("#deal-btn").click(function() {
+                socket.emit('deal_card');
+                console.log('Dealing the card.');
             });
 
             $("#hit-btn1").click(function() {
@@ -103,13 +83,12 @@
             });
         });
     </script>
-    <script>
-      socket.on('card_dealt', function(data) {
-        // Trigger card animation based on the received card data
-        console.log('Card dealt:', data.card);
-        // Implement your card animation logic here
-      });
-    </script>
+    <button class="button" id="deal-btn">Deal</button>
+    <button class="button" id="hit-btn1">Player 1 Hit</button>
+    <button class="button" id="hit-btn2">Player 2 Hit</button>
+    <button class="button" id="end-btn">End Game</button>
+    <div id="result"></div>
+
+    <div id="cardContainer"></div>
 </body>
 </html>
-
