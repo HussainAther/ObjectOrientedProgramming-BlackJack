@@ -1,8 +1,14 @@
 import random
-from flask import Flask, render_template, request
 
+from flask import Flask, render_template, request
+from flask_socketio import SocketIO, emit
+
+# Initialize the Flask app
 app = Flask(__name__, static_url_path='', static_folder='static', template_folder='templates')
 app.secret_key = "your_secret_key"
+
+# Initialize the socket instance
+socketio = SocketIO(app)
 
 class Card:
     def __init__(self, suit, rank):
@@ -111,8 +117,13 @@ class Game:
 game = Game()
 
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
+
+@socketio.on('deal_card')
+def deal_card():
+    card = deck.deal()
+    emit('card_dealt', {'card': str(card)})
 
 @app.route('/deal')
 def deal():
@@ -134,4 +145,4 @@ def end():
     return result
 
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app)
