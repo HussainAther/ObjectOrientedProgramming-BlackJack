@@ -12,6 +12,16 @@ Please use `pip install pillow` for installing the `ImageTK` module from the Pil
 ## Play multiplayer
 Please use `pip install flask flask-socketio` and `pip install python-socketio` for WebSocket support. 
 
+For compatibility reasons, it's recommended to use the following versions:
+
+```
+pip install --upgrade python-socketio==4.6.0
+
+pip install --upgrade python-engineio==3.13.2
+
+pip install --upgrade Flask-SocketIO==4.3.1
+```
+
 It's recommended to use a secret key.  
 
 The SECRET_KEY is a security measure used in Flask to protect against cross-site request forgery (CSRF) attacks and other security vulnerabilities. It is recommended to generate a random secret key and keep it confidential.
