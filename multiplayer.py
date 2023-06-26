@@ -122,8 +122,8 @@ def index():
 
 @socketio.on('deal_card')
 def deal_card():
-    card = deck.deal()
-    emit('card_dealt', {'card': str(card)})
+    card = game.deck.deal()
+    emit('card_dealt', {'card': str(card)}, broadcast=True)
 
 @app.route('/deal')
 def deal():
@@ -144,5 +144,5 @@ def end():
     result = game.end_game()
     return result
 
-if __name__ == '__main__':
-    socketio.run(app)
+# if __name__ == '__main__':
+socketio.run(app)
