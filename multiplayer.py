@@ -100,6 +100,32 @@ class Game:
     def hit(self, player):
         card = self.deck.deal()
         player.add_card(card)
+        
+    def stand(self, player):
+        # Player decides to stand
+        # Add any necessary logic here
+        # For example, you can display a message indicating that the player has chosen to stand
+        print(f"Player {player.name} stands.")
+
+        # Check if both players have stood
+        if self.player1_stood and self.player2_stood:
+            # If both players have stood, it's now the dealer's turn
+            while self.dealer.get_hand_value() < 17:
+                card = self.deck.deal()
+                self.dealer.add_card(card)
+                print(f"Dealer drew: {card}")
+
+            self.end_game()
+
+        # If only one player has stood, update their status
+        if player == self.player1:
+            self.player1_stood = True
+        elif player == self.player2:
+            self.player2_stood = True
+
+        # Return a message indicating that the player has stood
+        return f"Player {player.name} stands."
+
 
     def end_game(self):
         player1_value = self.player1.get_hand_value()
@@ -138,6 +164,15 @@ def hit():
     elif player == '2':
         game.hit(game.player2)
     return "Card dealt."
+
+@app.route('/stand')
+def stand():
+    player = request.args.get('player')
+    if player == '1':
+        game.stand(game.player1)
+    elif player == '2':
+        game.stand(game.player2)
+    return "Player {} stands.".format(player)
 
 @app.route('/end')
 def end():

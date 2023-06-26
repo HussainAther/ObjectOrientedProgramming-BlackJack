@@ -20,7 +20,6 @@
             document.getElementById('cardContainer').appendChild(cardElement);
             // Display the dealt card using animation
             var card = data.card;
-            console.log(card);
             animateCard(card);
         });
 
@@ -73,6 +72,24 @@
                 });
             });
 
+            $("#stand-btn1").click(function() {
+                $.ajax({
+                    url: "/stand?player=1",
+                    success: function(result) {
+                        alert(result);
+                    }
+                });
+            });
+
+            $("#stand-btn2").click(function() {
+                $.ajax({
+                    url: "/stand?player=2",
+                    success: function(result) {
+                        alert(result);
+                    }
+                });
+            });
+
             $("#end-btn").click(function() {
                 $.ajax({
                     url: "/end",
@@ -86,6 +103,8 @@
     <button class="button" id="deal-btn">Deal</button>
     <button class="button" id="hit-btn1">Player 1 Hit</button>
     <button class="button" id="hit-btn2">Player 2 Hit</button>
+    <button class="button" id="hit-btn1">Player 1 Stand</button>
+    <button class="button" id="hit-btn2">Player 2 Stand</button>
     <button class="button" id="end-btn">End Game</button>
     <div id="result"></div>
 
