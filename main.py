@@ -129,31 +129,41 @@ class BlackjackGUI:
 
     def draw_card(self, x, y, card):
         card_identifier = card.get_identifier()
-        # print(f"Card: {card}")
-        # print(f"Card identifier: {card_identifier}")
+
         if card_identifier in self.card_images:
             card_image = self.card_images[card_identifier]
-            card_id = self.canvas.create_image(x, y, image=card_image, anchor=tk.CENTER)
+
+            if not hasattr(card_image, "animated"):
+                card_image.animated = True
+
+                # Calculate the x-coordinate dynamically based on the number of cards and the canvas width
+                canvas_width = self.canvas.winfo_width()
+                card_width = card_image.width()
+                num_cards = len(self.player.hand)
+                total_width = num_cards * card_width
+                padding = (canvas_width - total_width) // 2
+                x = padding + (num_cards - 1) * card_width // 2
+
+                # Create the card image on the canvas
+                card_id = self.canvas.create_image(x, y, image=card_image, anchor=tk.CENTER)
+
+                # Animation effect: gradually move the card from top to the specified position
+                initial_y = y - 200  # Initial y-coordinate above the canvas
+                step = 10  # Move 10 pixels at a time
+                delay = 20  # Delay between each movement (milliseconds)
+
+                def animate():
+                    nonlocal y
+                    if y > initial_y:
+                        self.canvas.move(card_id, 0, -step)
+                        y -= step
+                        self.canvas.after(delay, animate)
+
+                animate()
+            else:
+                card_id = self.canvas.create_image(x, y, image=card_image, anchor=tk.CENTER)
         else:
             print(f"Card image not found for card: {card}")
-
-        # card_image = self.card_images[card]  # Get the image corresponding to the card
-        card_id = self.canvas.create_image(x, y, image=card_image, anchor=tk.CENTER)
-
-        # Animation effect: gradually move the card from top to the specified position
-        initial_y = y - 200  # Initial y-coordinate above the canvas
-        step = 10  # Move 10 pixels at a time
-        delay = 20  # Delay between each movement (milliseconds)
-
-        def animate():
-            nonlocal y
-            if y > initial_y:
-                self.canvas.move(card_id, 0, -step)
-                y -= step
-                self.canvas.after(delay, animate)
-
-        animate()
-
 
 class Card:
     def __init__(self, suit, rank):
