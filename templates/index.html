@@ -12,16 +12,16 @@
             var socket = io.connect('http://' + document.domain + ':' + location.port);
 
             socket.on('card_dealt', function(data) {
-            var cardName = data.card;
-            var cleanedCardName = cardName.replace(/of/g, '').trim();
-            var cardElement = document.createElement('div');
-            cardElement.className = 'card';
-            cardElement.style.backgroundImage = "url('static/cards/" + cleanedCardName.replace(/\s/g, "") + ".png')";
-            document.getElementById('cardContainer').appendChild(cardElement);
-            // Display the dealt card using animation
-            var card = data.card;
-            animateCard(card);
-        });
+                var cardName = data.card;
+                var cleanedCardName = cardName.replace(/of/g, '').trim();
+                var cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.style.backgroundImage = "url('static/cards/" + cleanedCardName.replace(/\s/g, "") + ".png')";
+                document.getElementById('cardContainer').appendChild(cardElement);
+                // Display the dealt card using animation
+                var card = data.card;
+                animateCard(card);
+            });
 
             function animateCard(card) {
                 // Create a new image element for the card
@@ -103,8 +103,8 @@
     <button class="button" id="deal-btn">Deal</button>
     <button class="button" id="hit-btn1">Player 1 Hit</button>
     <button class="button" id="hit-btn2">Player 2 Hit</button>
-    <button class="button" id="hit-btn1">Player 1 Stand</button>
-    <button class="button" id="hit-btn2">Player 2 Stand</button>
+    <button class="button" id="stand-btn1">Player 1 Stand</button>
+    <button class="button" id="stand-btn2">Player 2 Stand</button>
     <button class="button" id="end-btn">End Game</button>
     <div id="result"></div>
 
