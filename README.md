@@ -2,12 +2,12 @@
 
 GUI for playing Blackjack - complete with animations.
 
-## Play single player
-Run using `python singleplayer.py` . 
-
 Card images from Byron Knoll: http://code.google.com/p/vector-playing-cards/ and https://opengameart.org/content/colorful-poker-card-back
 
+## Play single player
 Please use `pip install pillow` for installing the Pillow library.
+
+Run using `python singleplayer.py` . 
 
 ## Play multiplayer
 Please use `pip install flask flask-socketio`, `pip install eventlet`, and `pip install python-socketio` for WebSocket support. 
