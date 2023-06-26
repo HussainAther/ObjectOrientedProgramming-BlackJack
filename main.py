@@ -1,5 +1,7 @@
 import random
 import tkinter as tk
+
+from PIL import ImageTk, Image
 from tkinter import messagebox
 
 class BlackjackGUI:
@@ -9,6 +11,22 @@ class BlackjackGUI:
         self.deck = Deck()
         self.player = Player("Player")
         self.dealer = Player("Dealer")
+
+        self.canvas = tk.Canvas(self.root, width=800, height=400, bg="green")
+        self.canvas.pack()
+
+        self.card_images = {}  # Dictionary to store card images
+
+        # Load card images
+        suits = ['C', 'D', 'H', 'S']
+        ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+
+        for suit in suits:
+            for rank in ranks:
+                card = Card(suit, rank)
+                card_name = card.get_identifier()
+                card_image = ImageTk.PhotoImage(Image.open(f'cards/{rank}{suit}.png'))
+                self.card_images[str(card_name)] = card_image
 
         self.create_widgets()
         self.start_game()
@@ -92,8 +110,49 @@ class BlackjackGUI:
         self.dealer = Player("Dealer")
 
     def update_hands(self):
+        self.canvas.delete("all")  # Clear the canvas
+
+        player_hand = self.player.hand
+        dealer_hand = self.dealer.hand
+
+        # Draw player's hand
+        for i, card in enumerate(player_hand):
+            x = 100 + i * 100
+            y = 300
+            self.draw_card(x, y, card)
+
+        # Draw dealer's hand (show only one card)
+        self.draw_card(100, 100, dealer_hand[0])
+
         self.player_hand_label.config(text=str(self.player))
         self.dealer_hand_label.config(text=str(self.dealer))
+
+    def draw_card(self, x, y, card):
+        card_identifier = card.get_identifier()
+        # print(f"Card: {card}")
+        # print(f"Card identifier: {card_identifier}")
+        if card_identifier in self.card_images:
+            card_image = self.card_images[card_identifier]
+            card_id = self.canvas.create_image(x, y, image=card_image, anchor=tk.CENTER)
+        else:
+            print(f"Card image not found for card: {card}")
+
+        # card_image = self.card_images[card]  # Get the image corresponding to the card
+        card_id = self.canvas.create_image(x, y, image=card_image, anchor=tk.CENTER)
+
+        # Animation effect: gradually move the card from top to the specified position
+        initial_y = y - 200  # Initial y-coordinate above the canvas
+        step = 10  # Move 10 pixels at a time
+        delay = 20  # Delay between each movement (milliseconds)
+
+        def animate():
+            nonlocal y
+            if y > initial_y:
+                self.canvas.move(card_id, 0, -step)
+                y -= step
+                self.canvas.after(delay, animate)
+
+        animate()
 
 
 class Card:
@@ -104,14 +163,19 @@ class Card:
     def __str__(self):
         return f"{self.rank} of {self.suit}"
 
+    def get_identifier(self):
+        return str(self)
+
 class Deck:
     def __init__(self):
         self.cards = []
         self.build()
 
     def build(self):
-        suits = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
-        ranks = range(1, 14)
+        # suits = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
+        suits = ['C', 'D', 'H', 'S']
+        # ranks = range(1, 14)
+        ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
 
         for suit in suits:
             for rank in ranks:
@@ -139,13 +203,21 @@ class Player:
         num_aces = 0
 
         for card in self.hand:
-            if card.rank > 10:
-                total += 10
-            elif card.rank == 1:
+            if isinstance(card.rank, int): 
+                if card.rank > 10:
+                    total += 10
+            elif card.rank == "A":
                 total += 11
                 num_aces += 1
-            else:
+            elif isinstance(card.rank, int): 
                 total += card.rank
+            elif isinstance(card.rank, str):
+                if card.rank == "J":
+                    total += 11
+                elif card.rank == "Q":
+                    total += 12
+                elif card.rank == "K":
+                    total += 13
 
         while total > 21 and num_aces > 0:
             total -= 10
