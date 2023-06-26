@@ -4,7 +4,7 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 
 # Initialize the Flask app
-app = Flask(__name__, static_url_path='', static_folder='static', template_folder='templates')
+app = Flask(__name__, static_url_path='/static', static_folder='static', template_folder='templates')
 app.secret_key = "your_secret_key"
 
 # Initialize the socket instance
@@ -123,7 +123,7 @@ def index():
 @socketio.on('deal_card')
 def deal_card():
     card = game.deck.deal()
-    emit('card_dealt', {'card': str(card)}, broadcast=True)
+    emit('card_dealt', {'card': card.get_identifier()}, broadcast=True)
 
 @app.route('/deal')
 def deal():
@@ -145,4 +145,5 @@ def end():
     return result
 
 if __name__ == '__main__':
+    app.debug = True
     socketio.run(app)
