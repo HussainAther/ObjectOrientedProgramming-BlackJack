@@ -25,7 +25,7 @@ class BlackjackGUI:
             for rank in ranks:
                 card = Card(suit, rank)
                 card_name = card.get_identifier()
-                card_image = ImageTk.PhotoImage(Image.open(f'cards/{rank}{suit}.png'))
+                card_image = ImageTk.PhotoImage(Image.open(f'static/cards/{rank}{suit}.png'))
                 self.card_images[str(card_name)] = card_image
 
         self.create_widgets()
