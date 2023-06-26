@@ -7,10 +7,10 @@ Run using `python singleplayer.py` .
 
 Card images from Byron Knoll: http://code.google.com/p/vector-playing-cards/ and https://opengameart.org/content/colorful-poker-card-back
 
-Please use `pip install pillow` for installing the `ImageTK` module from the Pillow library.
+Please use `pip install pillow` for installing the Pillow library.
 
 ## Play multiplayer
-Please use `pip install flask flask-socketio` and `pip install python-socketio` for WebSocket support. 
+Please use `pip install flask flask-socketio`, `pip install eventlet`, and `pip install python-socketio` for WebSocket support. 
 
 For compatibility reasons, it's recommended to use the following versions:
 
