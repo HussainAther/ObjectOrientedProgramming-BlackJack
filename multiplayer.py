@@ -86,6 +86,8 @@ class Game:
         self.deck = Deck()
         self.player1 = Player("Player 1")
         self.player2 = Player("Player 2")
+        self.player1_stood = False
+        self.player2_stood = False
 
     def start(self):
         self.deck.shuffle()
@@ -100,7 +102,7 @@ class Game:
     def hit(self, player):
         card = self.deck.deal()
         player.add_card(card)
-        
+
     def stand(self, player):
         # Player decides to stand
         # Add any necessary logic here
@@ -125,7 +127,6 @@ class Game:
 
         # Return a message indicating that the player has stood
         return f"Player {player.name} stands."
-
 
     def end_game(self):
         player1_value = self.player1.get_hand_value()
