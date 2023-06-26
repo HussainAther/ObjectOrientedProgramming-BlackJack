@@ -23,6 +23,36 @@
                 animateCard(card);
             });
 
+            // Function to handle the 'player_hand_updated' event (for "hit" action)
+                socket.on('player_hand_updated', function(data) {
+                    var player = data.player;
+                    var cardName = data.card;
+                    var cleanedCardName = cardName.replace(/of/g, '').trim();
+                    var cardElement = document.createElement('div');
+                    cardElement.className = 'card';
+                    cardElement.style.backgroundImage = "url('static/cards/" + cleanedCardName.replace(/\s/g, "") + ".png')";
+                    var playerHandId = 'player-hand-' + player;
+                    document.getElementById(playerHandId).appendChild(cardElement);
+                    // Display the dealt card using animation
+                    animateCard(cardName);
+                });
+
+                // Function to handle the 'player_stood' event (for "stand" action)
+                    socket.on('player_stood', function(data) {
+                        var player = data.player;
+                        var message = "Player " + player + " has stood.";
+                        console.log(message);
+                        // More stuff?
+                    });
+
+                    // Function to handle the 'game_result' event (for "end" action)
+                    socket.on('game_result', function(data) {
+                        var result = data.result;
+                        var message = "Game result: " + result;
+                        console.log(message);
+                        // More stuff?
+                    });
+
             function animateCard(card) {
                 // Create a new image element for the card
                 var cleanedCardName = card.replace(/of/g, '').trim();
@@ -45,7 +75,7 @@
                     'opacity': '1'
                 }, 1000, function() {
                     // Animation complete
-                    // You can perform additional actions here if needed
+                    // What else can we do?
                 });
             }
 

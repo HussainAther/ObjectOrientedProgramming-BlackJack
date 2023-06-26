@@ -103,8 +103,8 @@ class Game:
         card = self.deck.deal()
         player.add_card(card)
 
-        # Emit the updated hand value to the corresponding player
-        emit('player_hand_updated', {'player': player.name, 'hand_value': player.get_hand_value()}, broadcast=True)
+        # # Emit the updated hand value to the corresponding player
+        # socketio.emit('player_hand_updated', {'player': player.name, 'hand_value': player.get_hand_value()}, broadcast=True)
 
     def stand(self, player):
         # Player decides to stand
@@ -128,8 +128,8 @@ class Game:
         elif player == self.player2:
             self.player2_stood = True
 
-        # Emit the message indicating that the player has stood
-        emit('player_stood', {'player': player.name}, broadcast=True)
+        # # Emit the message indicating that the player has stood
+        # socketio.emit('player_stood', {'player': player.name}, broadcast=True)
 
     def end_game(self):
         player1_value = self.player1.get_hand_value()
@@ -144,8 +144,8 @@ class Game:
         else:
             result = "Unknown result"
 
-        # Emit the game result
-        emit('game_result', {'result': result}, broadcast=True)
+        # # Emit the game result
+        # socketio.emit('game_result', {'result': result}, broadcast=True)
 
 game = Game()
 
@@ -156,7 +156,7 @@ def index():
 @socketio.on('deal_card')
 def deal_card():
     card = game.deck.deal()
-    emit('card_dealt', {'card': card.get_identifier()}, broadcast=True)
+    socketio.emit('card_dealt', {'card': card.get_identifier()}, broadcast=True)
 
 @app.route('/deal')
 def deal():
@@ -165,25 +165,42 @@ def deal():
 
 @app.route('/hit')
 def hit():
-    player = request.args.get('player')
-    if player == '1':
-        game.hit(game.player1)
-    elif player == '2':
-        game.hit(game.player2)
+    player_number = request.args.get('player')
+    player = None
+
+    if player_number == '1':
+        player = game.player1
+    elif player_number == '2':
+        player = game.player2
+
+    if player is None:
+        return "Invalid player number."
+
+    game.hit(player)
+    socketio.emit('player_hand_updated', {'player': player.name, 'hand_value': player.get_hand_value()}, broadcast=True)
     return "Card dealt."
 
 @app.route('/stand')
 def stand():
-    player = request.args.get('player')
-    if player == '1':
-        game.stand(game.player1)
-    elif player == '2':
-        game.stand(game.player2)
-    return "Player {} stands.".format(player)
+    player_number = request.args.get('player')
+    player = None
+
+    if player_number == '1':
+        player = game.player1
+    elif player_number == '2':
+        player = game.player2
+
+    if player is None:
+        return "Invalid player number."
+
+    game.stand(player)
+    socketio.emit('player_stood', {'player': player.name}, broadcast=True)
+    return "Player {} stands.".format(player_number)
 
 @app.route('/end')
 def end():
     result = game.end_game()
+    socketio.emit('game_result', {'result': result}, broadcast=True)
     return result
 
 if __name__ == '__main__':
