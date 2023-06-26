@@ -9,10 +9,14 @@ Card images from Byron Knoll: http://code.google.com/p/vector-playing-cards/
 
 Please use `pip install pillow` for installing the `ImageTK` module from the Pillow library.
 
-## Player multiplayer
+## Play multiplayer
 Please use `pip install flask flask-socketio` and `pip install python-socketio` for WebSocket support. 
 
-It's recommended to use a `SECRET_KEY`. Generate one in Python like this:
+It's recommended to use a `SECRET_KEY`. 
+
+The SECRET_KEY is a security measure used in Flask to protect against cross-site request forgery (CSRF) attacks and other security vulnerabilities. It is recommended to generate a random secret key and keep it confidential.
+
+Generate one in Python like this:
 
 ```
 import secrets
