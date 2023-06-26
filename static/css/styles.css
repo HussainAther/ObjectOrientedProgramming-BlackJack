@@ -1,0 +1,40 @@
+body {
+    text-align: center;
+    margin-top: 100px;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 10px;
+    text-decoration: none;
+}
+
+.button:hover {
+    background-color: #45a049;
+}
+
+#result {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 30px;
+}
+
+.card {
+    width: 100px;
+    height: 150px;
+    background-image: url('/static/cards/back.png'); /* Default card back image */
+    background-size: contain;
+    background-repeat: no-repeat;
+}
