@@ -5,7 +5,7 @@ from flask_socketio import SocketIO, emit
 
 # Initialize the Flask app
 app = Flask(__name__, static_url_path='/static', static_folder='static', template_folder='templates')
-app.secret_key = "your_secret_key"
+app.config['SECRET_KEY'] = 'your_secret_key'
 
 # Initialize the socket instance
 socketio = SocketIO(app)
@@ -103,6 +103,9 @@ class Game:
         card = self.deck.deal()
         player.add_card(card)
 
+        # Emit the updated hand value to the corresponding player
+        emit('player_hand_updated', {'player': player.name, 'hand_value': player.get_hand_value()}, broadcast=True)
+
     def stand(self, player):
         # Player decides to stand
         # Add any necessary logic here
@@ -125,21 +128,24 @@ class Game:
         elif player == self.player2:
             self.player2_stood = True
 
-        # Return a message indicating that the player has stood
-        return f"Player {player.name} stands."
+        # Emit the message indicating that the player has stood
+        emit('player_stood', {'player': player.name}, broadcast=True)
 
     def end_game(self):
         player1_value = self.player1.get_hand_value()
         player2_value = self.player2.get_hand_value()
 
         if player1_value > 21 or (player2_value <= 21 and player2_value > player1_value):
-            return "Player 2 wins!"
+            result = "Player 2 wins!"
         elif player2_value > 21 or (player1_value <= 21 and player1_value > player2_value):
-            return "Player 1 wins!"
+            result = "Player 1 wins!"
         elif player1_value == player2_value:
-            return "It's a tie!"
+            result = "It's a tie!"
         else:
-            return "Unknown result"
+            result = "Unknown result"
+
+        # Emit the game result
+        emit('game_result', {'result': result}, broadcast=True)
 
 game = Game()
 
