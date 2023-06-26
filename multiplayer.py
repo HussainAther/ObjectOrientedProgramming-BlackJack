@@ -144,5 +144,5 @@ def end():
     result = game.end_game()
     return result
 
-# if __name__ == '__main__':
-socketio.run(app)
+if __name__ == '__main__':
+    socketio.run(app)
