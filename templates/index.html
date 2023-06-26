@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multiplayer Blackjack</title>
+    <style>
+        body {
+            text-align: center;
+            margin-top: 100px;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Multiplayer Blackjack</h1>
+    <button class="button" id="deal-btn">Deal</button>
+    <button class="button" id="hit-btn1">Player 1 Hit</button>
+    <button class="button" id="hit-btn2">Player 2 Hit</button>
+    <button class="button" id="end-btn">End Game</button>
+    <div id="result"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#deal-btn").click(function() {
+                $.ajax({
+                    url: "/deal",
+                    success: function(result) {
+                        alert(result);
+                    }
+                });
+            });
+
+            $("#hit-btn1").click(function() {
+                $.ajax({
+                    url: "/hit?player=1",
+                    success: function(result) {
+                        alert(result);
+                    }
+                });
+            });
+
+            $("#hit-btn2").click(function() {
+                $.ajax({
+                    url: "/hit?player=2",
+                    success: function(result) {
+                        alert(result);
+                    }
+                });
+            });
+
+            $("#end-btn").click(function() {
+                $.ajax({
+                    url: "/end",
+                    success: function(result) {
+                        $("#result").text(result);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
