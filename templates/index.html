@@ -1,48 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Multiplayer Blackjack</title>
-    <style>
-        body {
-            text-align: center;
-            margin-top: 100px;
-            font-family: Arial, sans-serif;
-        }
-
-        h1 {
-            font-size: 24px;
-        }
-
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 18px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 10px;
-            text-decoration: none;
-        }
-
-        .button:hover {
-            background-color: #45a049;
-        }
-
-        #result {
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 30px;
-        }
-        .card {
-            width: 100px;
-            height: 150px;
-            background-image: url('/static/cards/back.png'); /* Default card back image */
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js"></script>
 </head>
 <body>
     <h1>Multiplayer Blackjack</h1>
@@ -54,24 +15,55 @@
 
     <div id="cardContainer"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js"></script>
-    <script>
-        var socket = io();
+    <script type="text/javascript">
+        $(document).ready(function() {
+        // Connect to the WebSocket server
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
 
         socket.on('card_dealt', function(data) {
-            var cardName = data.card;
-            var cardElement = document.createElement('div');
-            cardElement.className = 'card';
-            cardElement.style.backgroundImage = "url('/static/cards/" + cardName + ".png')";
-            document.getElementById('cardContainer').appendChild(cardElement);
-        });
+        var cardName = data.card;
+        var cardElement = document.createElement('div');
+        cardElement.className = 'card';
+        cardElement.style.backgroundImage = "url('/static/cards/" + cardName + ".png')";
+        document.getElementById('cardContainer').appendChild(cardElement);
+        // Display the dealt card using animation
+        var card = data.card;
+        animateCard(card);
+        console.log(card);
+    });
+
+        // Animate the dealt card
+        function animateCard(card) {
+            // Create a new image element for the card
+            var img = $('<img>').attr('src', '/static/cards/' + card + '.png');
+
+            // Set the initial CSS properties for the card
+            img.css({
+                'position': 'absolute',
+                'top': '50%',
+                'left': '50%',
+                'transform': 'translate(-50%, -50%)',
+                'opacity': '0'
+            });
+
+            // Append the card to the document body
+            $('body').append(img);
+
+            // Animate the card's appearance
+            img.animate({
+                'opacity': '1'
+            }, 1000, function() {
+                // Animation complete
+                // You can perform additional actions here if needed
+            });
+        }
 
         function dealCard() {
             socket.emit('deal_card');
         }
+    }
     </script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             $("#deal-btn").click(function() {
@@ -112,9 +104,6 @@
         });
     </script>
     <script>
-      var socket = io();
-
-      // Handle the 'card_dealt' event
       socket.on('card_dealt', function(data) {
         // Trigger card animation based on the received card data
         console.log('Card dealt:', data.card);
