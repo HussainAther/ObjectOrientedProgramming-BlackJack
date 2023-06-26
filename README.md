@@ -2,7 +2,8 @@
 
 GUI for playing Blackjack - complete with animations.
 
-Run using `python main.py` . 
+## Play single player
+Run using `python singleplayer.py` . 
 
 Card images from Byron Knoll: http://code.google.com/p/vector-playing-cards/
 
