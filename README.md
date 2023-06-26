@@ -10,9 +10,9 @@ Card images from Byron Knoll: http://code.google.com/p/vector-playing-cards/
 Please use `pip install pillow` for installing the `ImageTK` module from the Pillow library.
 
 ## Player multiplayer
-Please use `pip install flask flask-socketio` for WebSocket support. 
+Please use `pip install flask flask-socketio` and `pip install python-socketio` for WebSocket support. 
 
-It's recommended to use a `SECRET_KEY`:
+It's recommended to use a `SECRET_KEY`. Generate one in Python like this:
 
 ```
 import secrets
@@ -20,6 +20,14 @@ import secrets
 secret_key = secrets.token_hex(16)
 print(secret_key)
 ```
+
+And replace `YOUR_SECRET_KEY` this line in `multiplayer.py`:
+
+```
+app.config['SECRET_KEY'] = 'YOUR_SECRET_KEY'
+```
+
+Make sure to keep the secret key private and avoid sharing it publicly or committing it to version control repositories.
 
 Then run using `python multiplayer.py`.
 
