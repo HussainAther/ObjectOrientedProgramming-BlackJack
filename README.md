@@ -45,4 +45,4 @@ Make sure to keep the secret key private and avoid sharing it publicly or commit
 
 Then run using `python multiplayer.py`.
 
-The server will be accessible to one player at http://localhost:5000 or the URL output by the Flask. The second player must visit the IP address of the first player followed by the port (e.g., xxx.xxx.x.xxx:50000). 
+The server will be accessible to one player at http://localhost:5000 or the URL output by the Flask. The second player must visit the IP address of the first player followed by the port (e.g., xxx.xxx.x.xxx:5000). 
